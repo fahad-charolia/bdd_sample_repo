@@ -2,20 +2,24 @@
 Feature: Refund Request from Order Details
 
   Scenario: Request a refund for an eligible order
-    Given the customer is logged in and views an eligible order
-    When the customer selects a refund reason and requests a refund
-    Then the order status should update to "Refund Requested"
+    Given the customer is on the order details page
+    And the order was delivered within the last 30 days and payment was completed
+    When the customer selects a refund reason from the predefined list
+    And the customer requests a refund
+    Then the order status should be updated to "Refund Requested"
     And a confirmation email should be sent to the customer
     And an analytics event for "Refund Request Initiated" should be recorded
 
   Scenario: Attempt to request a refund for an ineligible order
-    Given the customer is logged in and views an ineligible order
-    When the customer attempts to request a refund
+    Given the customer is on the order details page
+    But the order was not delivered within the last 30 days or payment was not completed
+    When the customer tries to request a refund
     Then the refund option should not be visible
-    And no refund request should be processed
+    And no refund process should be initiated
 
   Scenario: Request a refund without selecting a reason
-    Given the customer is logged in and views an eligible order
+    Given the customer is on the order details page
+    And the order is eligible for a refund
     When the customer attempts to request a refund without selecting a reason
     Then the refund request should not be processed
-    And an error message "Please select a refund reason" should be displayed
+    And an error message "Please select a reason for refund" should be displayed
