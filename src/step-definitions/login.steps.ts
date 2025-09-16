@@ -26,16 +26,16 @@ When('user tries to login with empty email and password fields', async () => {
   await $('button=Login').click();
 });
 
-Then('user should be redirected to the dashboard', async () => {
+Then('user is redirected to the dashboard', async () => {
   await expect(browser).toHaveUrlContaining('/dashboard');
 });
 
-Then('a session token should be stored in cookies', async () => {
+Then('a session token is stored in cookies', async () => {
   const cookies = await browser.getCookies(['session_token']);
   expect(cookies).not.toBeNull();
 });
 
-Then('an error message {string} should be displayed', async (message) => {
+Then('an error message {string} is displayed', async (message) => {
   const errorMessage = await $('.error').getText();
   expect(errorMessage).toContain(message);
 });
