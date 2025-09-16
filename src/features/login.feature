@@ -2,27 +2,27 @@
 Feature: User login via email and password
 
   Scenario: Successful login with valid email and password
-    Given user is on the login page
-    When user enters a valid email "user@example.com" and password "Password123"
-    Then user should be redirected to the dashboard
+    Given the user is on the login page
+    When the user enters a valid email "user@example.com" and password "password123"
+    Then the user should be redirected to the dashboard
     And a session token should be stored in cookies
 
   Scenario: Login with invalid email format
-    Given user is on the login page
-    When user enters an invalid email "userexample.com" and password "Password123"
+    Given the user is on the login page
+    When the user enters an invalid email "userexample.com" and any password "password123"
     Then an error message "Please enter a valid email address" should be displayed
 
   Scenario: Login with invalid password
-    Given user is on the login page
-    When user enters a valid email "user@example.com" and password "pass"
-    Then an error message "Password must be at least 8 characters with a mix of letters and numbers" should be displayed
+    Given the user is on the login page
+    When the user enters a valid email "user@example.com" and an invalid password "pass"
+    Then an error message "Password must be at least 8 characters and include a number" should be displayed
 
   Scenario: Login attempt with locked account
-    Given user is on the login page
-    When user enters credentials for a locked account "locked@example.com" and "Locked123"
+    Given the user is on the login page
+    When the user enters credentials for a locked account "locked@example.com" and "lockedPass123"
     Then an error message "Your account is locked" should be displayed
 
   Scenario: Login with empty email and password fields
-    Given user is on the login page
-    When user tries to login with empty email and password fields
+    Given the user is on the login page
+    When the user attempts to login without entering email and password
     Then an error message "Email and password are required" should be displayed
