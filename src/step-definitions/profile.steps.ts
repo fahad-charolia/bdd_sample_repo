@@ -16,22 +16,22 @@ When('the user saves the profile changes', async () => {
   await $('button=Save Changes').click();
 });
 
-Then('the profile should display the new display name {string}', async (name) => {
-  await expect($('#displayName').getText()).toEqual(name);
+Then('the profile should display the updated display name {string}', async (name) => {
+  await expect($('#displayName')).toHaveText(name);
 });
 
-Then('the profile should display the new bio {string}', async (bio) => {
-  await expect($('#bio').getText()).toEqual(bio);
+Then('the profile should display the updated bio {string}', async (bio) => {
+  await expect($('#bio')).toHaveText(bio);
 });
 
 When('the user uploads a valid avatar image {string}', async (fileName) => {
-  const filePath = `path/to/images/${fileName}`;
-  await $('#avatarInput').setValue(filePath);
+  const input = await $('input[type="file"]');
+  await input.setValue(`/path/to/${fileName}`);
 });
 
 When('the user attempts to upload a file {string}', async (fileName) => {
-  const filePath = `path/to/files/${fileName}`;
-  await $('#avatarInput').setValue(filePath);
+  const input = await $('input[type="file"]');
+  await input.setValue(`/path/to/${fileName}`);
 });
 
 Then('an error message {string} should be displayed', async (message) => {
@@ -39,5 +39,9 @@ Then('an error message {string} should be displayed', async (message) => {
 });
 
 Then('the new avatar should be displayed on the profile page', async () => {
-  await expect($('#avatarImage')).toBeDisplayed();
+  await expect($('#avatar')).toBeDisplayed();
+});
+
+Then('the default avatar should be displayed', async () => {
+  await expect($('#avatar')).toHaveAttribute('src', '/path/to/default_avatar.jpg');
 });
