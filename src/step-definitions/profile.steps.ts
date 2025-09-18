@@ -4,40 +4,43 @@ Given('the user is logged in and on the Profile Settings page', async () => {
   await browser.url('/profile-settings');
 });
 
-When('the user updates the display name to {string}', async (name) => {
-  await $('#displayName').setValue(name);
+When(/^the user updates the (display name|bio) to "([^"]*)"$/, async (field, value) => {
+  const selector = field === 'display name' ? '#displayName' : '#bio';
+  await $(selector).setValue(value);
 });
 
-When('the user updates the bio to {string}', async (bio) => {
-  await $('#bio').setValue(bio);
+When('the user uploads a valid avatar image {string}', async (filename) => {
+  const input = await $('#avatarUpload');
+  await input.setValue(`path/to/images/${filename}`);
+});
+
+When('the user attempts to upload an avatar with file {string}', async (filename) => {
+  const input = await $('#avatarUpload');
+  await input.setValue(`path/to/images/${filename}`);
 });
 
 When('the user saves the profile changes', async () => {
-  await $('button=Save Changes').click();
+  const saveButton = await $('#saveProfile');
+  await saveButton.click();
 });
 
-Then('the profile should display the new display name {string}', async (name) => {
-  await expect($('#displayName').getText()).toEqual(name);
+Then(/^the profile should display the updated (display name|bio) "([^"]*)"$/, async (field, expectedValue) => {
+  const selector = field === 'display name' ? '#displayNameText' : '#bioText';
+  await expect($(selector)).toHaveText(expectedValue);
 });
 
-Then('the profile should display the new bio {string}', async (bio) => {
-  await expect($('#bio').getText()).toEqual(bio);
-});
-
-When('the user uploads a valid avatar image {string}', async (fileName) => {
-  const filePath = `path/to/images/${fileName}`;
-  await $('#avatarInput').setValue(filePath);
-});
-
-When('the user attempts to upload a file {string}', async (fileName) => {
-  const filePath = `path/to/files/${fileName}`;
-  await $('#avatarInput').setValue(filePath);
+Then('the new avatar should be visible on the profile page', async () => {
+  const avatar = await $('#profileAvatar');
+  await expect(avatar).toBeDisplayed();
 });
 
 Then('an error message {string} should be displayed', async (message) => {
-  await expect($('.error')).toHaveTextContaining(message);
+  const errorMessage = await $('#errorMessage');
+  await expect(errorMessage).toHaveTextContaining(message);
 });
 
-Then('the new avatar should be displayed on the profile page', async () => {
-  await expect($('#avatarImage')).toBeDisplayed();
+Then('the profile should display the default avatar image', async () => {
+  const avatar = await $('#profileAvatar');
+  const defaultAvatarSrc = 'path/to/default_avatar.png';
+  await expect(avatar).toHaveAttribute('src', defaultAvatarSrc);
 });
